@@ -10,7 +10,7 @@ function Navbar() {
     };
 
     return (
-        <nav className="bg-slate-800 p-4 text-white">
+        <nav className="bg-slate-800 p-4 text-white rounded-md shadow-xl">
             <ul className="flex space-x-4 justify-between">
                 <div className="flex space-x-4 items-center">
                     <li>
@@ -21,7 +21,7 @@ function Navbar() {
                 </div>
                 <li>
                     <button
-                        className="bg-green-500 w-full p-2 rounded-md"
+                        className="bg-green-500 w-full p-2 rounded-md cursor-pointer hover:bg-green-600"
                         onClick={handleLogout}
                     >
                         Logout

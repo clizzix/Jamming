@@ -10,6 +10,7 @@ const SCOPES = [
     'user-read-private',
     'user-read-email',
     'playlist-read-private',
+    'playlist-modify-private',
 ];
 
 function App() {
@@ -40,9 +41,15 @@ function App() {
         return <div>Loading...</div>;
     }
     return (
-        <div>
-            <h1>Jamming</h1>
-            <button onClick={redirectToSpotifyAuthorize}>
+        <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center text-center gap-8 p-4">
+            <h1 className="text-5xl font-bold">Jamming</h1>
+            <p className="text-lg text-gray-300">
+                Create and save your perfect Spotify playlist.
+            </p>
+            <button
+                onClick={redirectToSpotifyAuthorize}
+                className="bg-green-500 text-white font-bold py-3 px-8 rounded-full hover:bg-green-600 transition-colors text-lg cursor-pointer"
+            >
                 Sign in with Spotify
             </button>
         </div>

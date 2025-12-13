@@ -28,13 +28,66 @@ function Dashboard() {
         setPlaylistName(name);
     };
 
-    const savePlaylist = () => {
-        // Diese Funktion wird im nächsten Schritt implementiert
-        console.log(
-            'Saving playlist to Spotify:',
-            playlistName,
-            playlistTracks
-        );
+    const savePlaylist = async () => {
+        const accessToken = localStorage.getItem('access_token');
+        const trackUris = playlistTracks.map((track) => track.uri);
+
+        if (!trackUris.length || !playlistName) {
+            alert('Please add tracks to your playlist and give it a name.');
+            return;
+        }
+
+        if (!accessToken) {
+            console.error('Access Token not found!');
+            return;
+        }
+
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        };
+
+        try {
+            // 1. Get current user's ID
+            const userResponse = await fetch('https://api.spotify.com/v1/me', {
+                headers: headers,
+            });
+            if (!userResponse.ok) throw new Error('Failed to fetch user ID');
+            const userData = await userResponse.json();
+            const userId = userData.id;
+
+            // 2. Create a new playlist
+            const createPlaylistResponse = await fetch(
+                `https://api.spotify.com/v1/users/${userId}/playlists`,
+                {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ name: playlistName, public: false }),
+                }
+            );
+            if (!createPlaylistResponse.ok)
+                throw new Error('Failed to create playlist');
+            const playlistData = await createPlaylistResponse.json();
+            const playlistId = playlistData.id;
+
+            // 3. Add tracks to the new playlist
+            await fetch(
+                `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+                {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ uris: trackUris }),
+                }
+            );
+
+            // Reset the state after successful save
+            setPlaylistName('New Playlist');
+            setPlaylistTracks([]);
+            alert('Playlist saved to your Spotify account!');
+        } catch (error) {
+            console.error('Error saving playlist:', error);
+            alert(`Error saving playlist: ${error.message}`);
+        }
     };
 
     // Funktion zur Suche nach Songs auf Spotify
@@ -82,12 +135,11 @@ function Dashboard() {
     };
 
     return (
-        <div className="bg-gray-900 text-white min-h-screen">
+        <div className="bg-gray-900 text-white min-h-screen rounded-md">
             <Navbar />
             <main>
                 <SearchBar onSearch={searchSpotify} />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
-                    {/* Suchergebnisse */}
                     <div className="bg-gray-800 p-4 rounded-md">
                         <h2 className="text-xl font-bold mb-4">Results</h2>
                         <Tracklist
@@ -96,7 +148,6 @@ function Dashboard() {
                             isRemoval={false}
                         />
                     </div>
-                    {/* Playlist */}
                     <Playlist
                         playlistName={playlistName}
                         playlistTracks={playlistTracks}

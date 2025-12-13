@@ -28,7 +28,7 @@ function Playlist({
             />
             <button
                 onClick={onSave}
-                className="bg-green-500 w-full p-2 mt-4 rounded-md"
+                className="bg-green-500 w-full p-2 mt-4 rounded-md cursor-pointer hover:bg-green-600"
             >
                 SAVE TO SPOTIFY
             </button>
