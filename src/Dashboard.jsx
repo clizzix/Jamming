@@ -1,20 +1,64 @@
 // src/pages/Dashboard.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
+import SearchBar from './components/SearchBar';
+import Tracklist from './components/Tracklist';
 
 function Dashboard() {
-    // Hier können Sie später API-Aufrufe mit dem access_token durchführen
+    const [searchResults, setSearchResults] = useState([]);
+
+    const searchSpotify = async (term) => {
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+            console.error('Access Token nicht gefunden!');
+            // Optional: Nutzer zum Login umleiten
+            return;
+        }
+
+        const searchUrl = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(
+            term
+        )}`;
+
+        try {
+            const response = await fetch(searchUrl, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Spotify-Suche fehlgeschlagen');
+            }
+
+            const jsonResponse = await response.json();
+            if (!jsonResponse.tracks) {
+                setSearchResults([]);
+                return;
+            }
+
+            const tracks = jsonResponse.tracks.items.map((track) => ({
+                id: track.id,
+                name: track.name,
+                artist: track.artists[0].name,
+                album: track.album.name,
+                uri: track.uri,
+            }));
+
+            setSearchResults(tracks);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
-        <div>
+        <div className="bg-gray-900 text-white min-h-screen">
             <Navbar />
-            <main className="p-4">
-                <h2>Your Jamming Dashboard</h2>
-                <p>Your Login was Succesfull</p>
-                {/* Beispiel: Token anzeigen (nur zu Debugging-Zwecken) */}
-                <p>
-                    Access Token:{' '}
-                    {localStorage.getItem('access_token')?.substring(0, 10)}...
-                </p>
+            <main>
+                <SearchBar onSearch={searchSpotify} />
+                <div className="p-4">
+                    <h2 className="text-xl font-bold mb-4">Results</h2>
+                    <Tracklist tracks={searchResults} />
+                </div>
             </main>
         </div>
     );
