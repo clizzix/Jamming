@@ -14,9 +14,9 @@ function SearchBar({ onSearch }) {
     return (
         <div className="flex items-center justify-center p-4">
             <input
-                placeholder="Enter A Song, Album, or Artist"
+                placeholder="Search..."
                 onChange={handleTermChange}
-                className="p-2 rounded-l-md text-black"
+                className="p-2 rounded-l-md text-white"
             />
             <button onClick={search} className="bg-blue-500 p-2 rounded-r-md">
                 SEARCH

@@ -12,24 +12,20 @@ function Navbar() {
     return (
         <nav className="bg-slate-800 p-4 text-white">
             <ul className="flex space-x-4 justify-between">
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 items-center">
                     <li>
                         <NavLink to="/dashboard" className="hover-cursor">
                             Dashboard
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/Playlist">Playlist</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="Track">Track</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="Tracklist">Tracklist</NavLink>
-                    </li>
                 </div>
                 <li>
-                    <button onClick={handleLogout}>Logout</button>
+                    <button
+                        className="bg-green-500 w-full p-2 rounded-md"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
                 </li>
             </ul>
         </nav>
