@@ -1,7 +1,7 @@
 // src/components/Callback.jsx
 
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Angenommen, Sie verwenden React Router
+import { useNavigate } from 'react-router-dom';
 
 // ⚠️ ERSETZEN SIE DIESE WERTE ⚠️
 const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
@@ -45,7 +45,7 @@ function Callback() {
             code: code,
             redirect_uri: REDIRECT_URI,
             client_id: CLIENT_ID,
-            code_verifier: codeVerifier, // PKCE-spezifisch: Muss mit dem Challenge übereinstimmen
+            code_verifier: codeVerifier,
         });
 
         try {
