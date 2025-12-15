@@ -19,7 +19,7 @@ function Playlist({
             <input
                 onChange={handleNameChange}
                 value={playlistName}
-                className="bg-gray-700 p-2 rounded-md w-full mb-4"
+                className="bg-gray-700 p-2 rounded-full w-full mb-4 text-center"
             />
             <Tracklist
                 tracks={playlistTracks}
@@ -28,7 +28,7 @@ function Playlist({
             />
             <button
                 onClick={onSave}
-                className="bg-green-500 w-full p-2 mt-4 rounded-md cursor-pointer hover:bg-green-600"
+                className="bg-green-500 w-full p-2 mt-4 rounded-full cursor-pointer hover:bg-green-600"
             >
                 SAVE TO SPOTIFY
             </button>

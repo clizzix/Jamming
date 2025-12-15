@@ -34,8 +34,11 @@ export async function generatePKCE() {
     const codeVerifier = generateRandomString(128); // 43-128 Zeichen
     const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-    // Der Code Verifier MUSS für den zweiten Schritt gespeichert werden!
     localStorage.setItem('code_verifier', codeVerifier);
+    console.log(
+        'DEBUG (auth.js): Code Verifier stored in localStorage:',
+        codeVerifier
+    );
 
     return codeChallenge;
 }

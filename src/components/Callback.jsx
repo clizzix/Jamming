@@ -1,6 +1,6 @@
 // src/components/Callback.jsx
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // ⚠️ ERSETZEN SIE DIESE WERTE ⚠️
@@ -10,6 +10,7 @@ const TOKEN_URL = 'https://accounts.spotify.com/api/token';
 
 function Callback() {
     const navigate = useNavigate();
+    const isProcessing = useRef(false); // Ref, um Mehrfachausführung zu verhindern
 
     const exchangeCodeForToken = useCallback(
         async (code) => {
@@ -17,6 +18,21 @@ function Callback() {
             const codeVerifier = localStorage.getItem('code_verifier');
 
             // ACHTUNG: Der Client Secret WIRD HIER NICHT VERWENDET, da dies eine Public Client App (React/Vite) ist.
+            console.log('DEBUG (Callback.jsx): CLIENT_ID:', CLIENT_ID);
+            console.log('DEBUG (Callback.jsx): REDIRECT_URI:', REDIRECT_URI);
+            console.log('DEBUG (Callback.jsx): Code from URL:', code);
+            console.log(
+                'DEBUG (Callback.jsx): Code Verifier from localStorage:',
+                codeVerifier
+            );
+
+            if (!codeVerifier) {
+                console.error(
+                    'Fehler: Code Verifier nicht im Local Storage gefunden.'
+                );
+                navigate('/');
+                return;
+            }
 
             const payload = new URLSearchParams({
                 grant_type: 'authorization_code',
@@ -92,11 +108,21 @@ function Callback() {
             return;
         }
 
-        // Code-Exchange nur ausführen, wenn wir einen Code haben
         if (code) {
-            exchangeCodeForToken(code);
+            // Verhindere Mehrfachausführung, besonders im React Strict Mode
+            if (!isProcessing.current) {
+                isProcessing.current = true; // Setze Flag, um weitere Aufrufe zu blockieren
+                exchangeCodeForToken(code);
+            } else {
+                console.warn(
+                    'Autorisierungscode wird bereits verarbeitet. Warte auf Abschluss...'
+                );
+            }
         } else {
-            // Keine Autorisierungsinformationen vorhanden (z.B. direkter Aufruf)
+            // Wenn kein Code vorhanden ist, zur Startseite navigieren.
+            console.warn(
+                'Kein Autorisierungscode in der URL gefunden. Umleitung zur Startseite.'
+            );
             navigate('/');
         }
     }, [navigate, exchangeCodeForToken]);

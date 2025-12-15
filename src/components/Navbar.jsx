@@ -21,7 +21,7 @@ function Navbar() {
                 </div>
                 <li>
                     <button
-                        className="bg-green-500 w-full p-2 rounded-md cursor-pointer hover:bg-green-600"
+                        className="bg-green-500 w-full p-2 rounded-full cursor-pointer hover:bg-green-600"
                         onClick={handleLogout}
                     >
                         Logout
